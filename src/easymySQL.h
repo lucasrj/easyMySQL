@@ -1,19 +1,23 @@
 #pragma once
-#include <mysql.h>
+#include <mysql/mysql.h>
 #include <string>
 #include <vector>
 #include <ostream>
-class mySQL
+
+typedef std::vector<std::vector<std::string>> table;
+
+class easymySQL
 {
 public:
-	mySQL(const char* host, const char* user, const char* pass, const char* db);
-	mySQL(const char* host, const char* user, const char* pass, const char* db,int port);
+    easymySQL(const char* host, const char* user, const char* pass, const char* db);
+    easymySQL(const char* host, const char* user, const char* pass, const char* db,int port);
 
-	std::vector<std::vector<std::string>> getTable(std::string tablename);
+    table getTable(std::string tablename);
 	void makeTable(std::string tablename,std::string setup);
 	void dropTable(std::string tablename);
 	
 	void addData(std::string tablename, std::string data);
+    void addData(std::string tablename, table data);
 
 
 

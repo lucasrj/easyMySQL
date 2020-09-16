@@ -1,10 +1,10 @@
-#include "mySQL.h"
-#include <mysql.h>
+#include "easymySQL.h"
+#include <mysql/mysql.h>
 #include <string>
 #include <iostream>
 #include <vector>
 
-mySQL::mySQL(const char* host, const char* user, const char* pass, const char* db) {
+easymySQL::easymySQL(const char* host, const char* user, const char* pass, const char* db) {
 
 	database = db;
 	conn = mysql_init(0);
@@ -17,7 +17,7 @@ mySQL::mySQL(const char* host, const char* user, const char* pass, const char* d
 		std::cout << "Connection to database has failed" << std::endl;
 }
 
-mySQL::mySQL(const char* host, const char* user, const char* pass, const char* db, int port) {
+easymySQL::easymySQL(const char* host, const char* user, const char* pass, const char* db, int port) {
 
 	conn = mysql_init(0);
 	conn = mysql_real_connect(conn, host, user, pass, db, port, NULL, 0);
@@ -29,7 +29,7 @@ mySQL::mySQL(const char* host, const char* user, const char* pass, const char* d
 		std::cout << "Connection to database has failed" << std::endl;
 }
 
-std::vector<std::vector<std::string>> mySQL::getTable(std::string tablename)
+std::vector<std::vector<std::string>> easymySQL::getTable(std::string tablename)
 {
 	std::vector<std::vector<std::string>> table;
 	std::string query = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = '"+ database + "'AND table_name = '" + tablename + "';";
@@ -64,14 +64,14 @@ std::vector<std::vector<std::string>> mySQL::getTable(std::string tablename)
 	return table;
 }
 
-void mySQL::makeTable(std::string tablename, std::string setup)
+void easymySQL::makeTable(std::string tablename, std::string setup)
 {
 	std::string query = "create table " + tablename + " (" + setup + ");" ;
 	const char* q = query.c_str();
 	int qstate = mysql_query(conn, q);
 }
 
-void mySQL::dropTable(std::string tablename)
+void easymySQL::dropTable(std::string tablename)
 {
 
 	std::string query = "drop table if exists " + tablename + ";";
@@ -79,14 +79,34 @@ void mySQL::dropTable(std::string tablename)
 	int qstate = mysql_query(conn, q);
 }
 
-void mySQL::addData(std::string tablename, std::string data)
+void easymySQL::addData(std::string tablename, std::string data)
 {
 	std::string query = "insert into " + tablename + " values (" + data + ");";
 	const char* q = query.c_str();
-	int qstate = mysql_query(conn, q);
+    int qstate = mysql_query(conn, q);
 }
 
-void mySQL::printTable(std::string tablename, std::ostream& ost)
+void easymySQL::addData(std::string tablename, std::vector<std::vector<std::string> > data)
+{
+    std::string query = "insert into " + tablename + " ½values (";
+    for(int i = 0; i<data.size();++i){
+        for (int j = 0; j<data[i].size();++j){
+            if (j == data[i].size()-1)
+                query = query + "\"" + data[i][j] + "\"";
+            else
+                query = query + "\"" + data[i][j] + "\",";
+        }
+        if (i == data.size()-1)
+            query = query + ");";
+        else
+           query = query + "),(";
+    }
+    std::cout << query;
+    const char* q = query.c_str();
+    int qstate = mysql_query(conn, q);
+}
+
+void easymySQL::printTable(std::string tablename, std::ostream& ost)
 {
 	std::vector<std::vector<std::string>> temp = this->getTable(tablename);
 
