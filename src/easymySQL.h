@@ -12,6 +12,8 @@ public:
     easymySQL(const char* host, const char* user, const char* pass, const char* db);
     easymySQL(const char* host, const char* user, const char* pass, const char* db,int port);
 
+	bool isConnected();
+
     table getTable(std::string tablename);
 	void makeTable(std::string tablename,std::string setup);
 	void dropTable(std::string tablename);
