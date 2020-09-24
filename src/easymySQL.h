@@ -25,6 +25,8 @@ public:
     void editindex(std::string tablename,std::string coll, std::string newdata ,int index, std::string id = "id");
     void dropindex(std::string tablename, int index, std::string id = "id");
 
+	table getTableNames();
+
 	void printTable(std::string tablename, std::ostream& ost);
 	void TableTocsv(std::string tablename, std::ostream& ost);
 
